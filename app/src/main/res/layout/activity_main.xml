@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#0F172A"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎬 Movie Night Planner"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FACC15"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="20dp"/>
+
+        <!-- Name -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter your name"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#94A3B8"
+            android:backgroundTint="#FACC15"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="20dp"/>
+
+        <!-- People -->
+        <EditText
+            android:id="@+id/etPeople"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Number of People"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#94A3B8"
+            android:backgroundTint="#FACC15"
+            app:layout_constraintTop_toBottomOf="@id/etName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"/>
+
+        <!-- Genre Label -->
+        <TextView
+            android:id="@+id/genreLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Genre"
+            android:textColor="#E2E8F0"
+            app:layout_constraintTop_toBottomOf="@id/etPeople"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="20dp"/>
+
+        <!-- RadioGroup -->
+        <RadioGroup
+            android:id="@+id/rgGenre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/genreLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Action"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FACC15"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comedy"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FACC15"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Horror"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#FACC15"/>
+        </RadioGroup>
+
+        <!-- Snacks Label -->
+        <TextView
+            android:id="@+id/snacksLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Snacks"
+            android:textColor="#E2E8F0"
+            app:layout_constraintTop_toBottomOf="@id/rgGenre"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="20dp"/>
+
+        <!-- Checkboxes -->
+        <CheckBox
+            android:id="@+id/cbPopcorn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Popcorn 🍿"
+            android:textColor="#FFFFFF"
+            app:layout_constraintTop_toBottomOf="@id/snacksLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"/>
+
+        <CheckBox
+            android:id="@+id/cbDrink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cold Drink 🥤"
+            android:textColor="#FFFFFF"
+            app:layout_constraintTop_toBottomOf="@id/cbPopcorn"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"/>
+
+        <CheckBox
+            android:id="@+id/cbNachos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nachos 🧀"
+            android:textColor="#FFFFFF"
+            app:layout_constraintTop_toBottomOf="@id/cbDrink"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"/>
+
+        <!-- Spinner Label -->
+        <TextView
+            android:id="@+id/platformLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Platform"
+            android:textColor="#E2E8F0"
+            app:layout_constraintTop_toBottomOf="@id/cbNachos"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="20dp"/>
+
+        <!-- Spinner -->
+        <Spinner
+            android:id="@+id/spinnerPlatform"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FACC15"
+            app:layout_constraintTop_toBottomOf="@id/platformLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"/>
+
+        <!-- Date Picker -->
+        <Button
+            android:id="@+id/btnDate"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Select Date 📅"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#334155"
+            app:layout_constraintTop_toBottomOf="@id/spinnerPlatform"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="20dp"/>
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Plan Movie Night"
+            android:textColor="#000000"
+            android:enabled="false"
+            android:backgroundTint="#FACC15"
+            app:layout_constraintTop_toBottomOf="@id/btnDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="30dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
