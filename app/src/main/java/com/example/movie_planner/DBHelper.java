@@ -6,12 +6,16 @@ import android.database.Cursor;
 
 public class DBHelper extends SQLiteOpenHelper {
 
+    // 🔧 Constructor (Database name + version)
     public DBHelper(Context context) {
-        super(context, "MovieDB", null, 3); // version updated
+        super(context, "MovieDB", null, 5); // version updated for users table
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        // 🎬 ================== MOVIE PLANS TABLE ==================
+        // Used in: MainActivity (store movie plans)
         db.execSQL("CREATE TABLE plans(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
@@ -20,16 +24,34 @@ public class DBHelper extends SQLiteOpenHelper {
                 "snacks TEXT, " +
                 "platform TEXT, " +
                 "date TEXT, " +
-                "time TEXT)"); // ✅ added time
+                "time TEXT)");
+
+        // 👤 ================== USERS TABLE ==================
+        // Used in: SignupActivity + LoginActivity
+        db.execSQL("CREATE TABLE users(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
+                "email TEXT UNIQUE, " +
+                "username TEXT UNIQUE, " +
+                "gender TEXT, " +
+                "dob TEXT, " +
+                "password TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        // 🔄 Drop old tables (if schema changes)
         db.execSQL("DROP TABLE IF EXISTS plans");
+        db.execSQL("DROP TABLE IF EXISTS users");
+
         onCreate(db);
     }
 
-    // ✅ UPDATED INSERT
+    // 🎬 ================== MOVIE PLAN METHODS ==================
+
+    // ➤ Used in: MainActivity
+    // Inserts movie plan details
     public void insertPlan(String name, String people, String genre,
                            String snacks, String platform, String date, String time) {
 
@@ -42,12 +64,65 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("snacks", snacks);
         cv.put("platform", platform);
         cv.put("date", date);
-        cv.put("time", time); // ✅ added
+        cv.put("time", time);
 
         db.insert("plans", null, cv);
     }
 
+    // ➤ Used in: HistoryActivity
+    // Fetch all movie plans
     public Cursor getAllPlans() {
         return getReadableDatabase().rawQuery("SELECT * FROM plans", null);
+    }
+
+    // 👤 ================== USER AUTHENTICATION METHODS ==================
+
+    // ➤ Used in: SignupActivity
+    // Insert new user details into database
+    public boolean insertUser(String name, String email, String username,
+                              String gender, String dob, String password) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("name", name);
+        cv.put("email", email);
+        cv.put("username", username);
+        cv.put("gender", gender);
+        cv.put("dob", dob);
+        cv.put("password", password);
+
+        long result = db.insert("users", null, cv);
+        return result != -1;
+    }
+
+    // ➤ Used in: LoginActivity
+    // Check if username & password match (login validation)
+    public boolean checkUser(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM users WHERE username=? AND password=?",
+                new String[]{username, password}
+        );
+
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    // ➤ Used in: SignupActivity
+    // Check if username already exists (to ensure uniqueness)
+    public boolean isUsernameExists(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM users WHERE username=?",
+                new String[]{username}
+        );
+
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
     }
 }

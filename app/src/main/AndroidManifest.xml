@@ -13,18 +13,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MoviePlanner">
+
+        <!-- 🎬 SPLASH SCREEN (FIRST SCREEN) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ResultActivity" />
-        <activity android:name=".HistoryActivity" />
-    </application>
+        <!-- 🔐 LOGIN -->
+        <activity android:name=".LoginActivity" />
 
+        <!-- 📝 SIGNUP -->
+        <activity android:name=".SignupActivity" />
+
+        <!-- 🎯 MAIN -->
+        <activity android:name=".MainActivity" />
+
+        <!-- 📊 RESULT -->
+        <activity android:name=".ResultActivity" />
+
+        <!-- 📜 HISTORY -->
+        <activity android:name=".HistoryActivity" />
+
+    </application>
 </manifest>
