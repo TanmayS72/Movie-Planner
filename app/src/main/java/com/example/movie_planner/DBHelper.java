@@ -7,7 +7,7 @@ import android.database.Cursor;
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
-        super(context, "MovieDB", null, 2); // version updated
+        super(context, "MovieDB", null, 3); // version updated
     }
 
     @Override
@@ -19,7 +19,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "genre TEXT, " +
                 "snacks TEXT, " +
                 "platform TEXT, " +
-                "date TEXT)");
+                "date TEXT, " +
+                "time TEXT)"); // ✅ added time
     }
 
     @Override
@@ -28,8 +29,9 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // ✅ UPDATED INSERT
     public void insertPlan(String name, String people, String genre,
-                           String snacks, String platform, String date) {
+                           String snacks, String platform, String date, String time) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -40,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("snacks", snacks);
         cv.put("platform", platform);
         cv.put("date", date);
+        cv.put("time", time); // ✅ added
 
         db.insert("plans", null, cv);
     }

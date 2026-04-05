@@ -27,6 +27,11 @@ public class ResultActivity extends AppCompatActivity {
         String platform = getIntent().getStringExtra("platform");
         String date = getIntent().getStringExtra("date");
 
+        // NEW FEATURES
+        int cost = getIntent().getIntExtra("cost", 0);
+        String suggestion = getIntent().getStringExtra("suggestion");
+        String time = getIntent().getStringExtra("time");
+
         // Null safety
         if (name == null) name = "Guest";
         if (people == null) people = "0";
@@ -34,15 +39,17 @@ public class ResultActivity extends AppCompatActivity {
         if (snacks == null) snacks = "None";
         if (platform == null) platform = "Not selected";
         if (date == null) date = "Not selected";
+        if (suggestion == null) suggestion = "No suggestion";
+        if (time == null) time = "Not selected";
 
-        // Dynamic Greeting (🔥 looks pro)
+        // Greeting
         String greeting;
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (hour < 12) greeting = "Good Morning ☀️";
         else if (hour < 17) greeting = "Good Afternoon 🌤️";
         else greeting = "Good Evening 🌙";
 
-        // Premium formatted output
+        // Final Output
         String resultText =
                 greeting + ", " + name + "!\n\n" +
 
@@ -53,13 +60,17 @@ public class ResultActivity extends AppCompatActivity {
                         "🎭 Genre: " + genre + "\n" +
                         "📺 Platform: " + platform + "\n" +
                         "📅 Date: " + date + "\n" +
+                        "⏰ Time: " + time + "\n" +
                         "🍿 Snacks: " + snacks + "\n\n" +
+
+                        "🎥 Suggested Movie: " + suggestion + "\n" +
+                        "💰 Total Cost: ₹" + cost + "\n\n" +
 
                         "✨ Sit back, relax & enjoy your movie night! 🍿🎉";
 
         tv.setText(resultText);
 
-        // Implicit Intent → Open Maps
+        // Maps Intent
         btnMap.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("geo:0,0?q=movie theatre near me"));

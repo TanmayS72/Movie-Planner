@@ -171,6 +171,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="20dp"/>
 
+        <!-- NEW: Time Picker -->
+        <Button
+            android:id="@+id/btnTime"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Select Time ⏰"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#334155"
+            app:layout_constraintTop_toBottomOf="@id/btnDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"/>
+
         <!-- Submit Button -->
         <Button
             android:id="@+id/btnSubmit"
@@ -180,10 +194,24 @@
             android:textColor="#000000"
             android:enabled="false"
             android:backgroundTint="#FACC15"
-            app:layout_constraintTop_toBottomOf="@id/btnDate"
+            app:layout_constraintTop_toBottomOf="@id/btnTime"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="30dp"/>
+
+        <!-- NEW: History Button -->
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="View History 📜"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#334155"
+            app:layout_constraintTop_toBottomOf="@id/btnSubmit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="30dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,16 +1,11 @@
 package com.example.movie_planner;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.app.*;
+import android.content.*;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.*;
 import android.widget.*;
 
 import androidx.appcompat.app.AlertDialog;
@@ -24,11 +19,12 @@ public class MainActivity extends AppCompatActivity {
     EditText name, people;
     RadioGroup genreGroup;
     CheckBox popcorn, drink, nachos;
-    Button submit, btnDate;
+    Button submit, btnDate, btnTime, btnHistory;
     Spinner spinner;
     DBHelper dbHelper;
 
     String selectedDate = "";
+    String selectedTime = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         spinner = findViewById(R.id.spinnerPlatform);
         btnDate = findViewById(R.id.btnDate);
+        btnTime = findViewById(R.id.btnTime);
+        btnHistory = findViewById(R.id.btnHistory);
 
         dbHelper = new DBHelper(this);
 
-        // Notification Permission
+        // Notification permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -56,16 +54,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // SharedPref load
+        // SharedPref
         SharedPreferences prefs = getSharedPreferences("MovieApp", MODE_PRIVATE);
         name.setText(prefs.getString("name", ""));
 
         // Spinner
         String[] platforms = {"Choose", "Netflix", "Theatre", "Amazon Prime"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, R.layout.spinner_item, platforms);
+                this, android.R.layout.simple_spinner_item, platforms);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        // Spinner text color fix
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+                if (view != null) ((TextView) view).setTextColor(Color.WHITE);
+                validate();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         // Date Picker
         btnDate.setOnClickListener(v -> {
@@ -80,6 +87,23 @@ public class MainActivity extends AppCompatActivity {
                     c.get(Calendar.YEAR),
                     c.get(Calendar.MONTH),
                     c.get(Calendar.DAY_OF_MONTH));
+
+            dialog.show();
+        });
+
+        // ✅ Time Picker (ADDED)
+        btnTime.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            TimePickerDialog dialog = new TimePickerDialog(this,
+                    (view, h, m) -> {
+                        selectedTime = h + ":" + m;
+                        btnTime.setText(selectedTime);
+                        validate();
+                    }, hour, minute, true);
 
             dialog.show();
         });
@@ -102,38 +126,27 @@ public class MainActivity extends AppCompatActivity {
         drink.setOnCheckedChangeListener(checkListener);
         nachos.setOnCheckedChangeListener(checkListener);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
-                validate();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {}
+        // ✅ History Button (ADDED)
+        btnHistory.setOnClickListener(v -> {
+            startActivity(new Intent(this, HistoryActivity.class));
         });
 
         submit.setOnClickListener(v -> showDialog());
     }
 
-    // ✅ MOVED OUTSIDE onCreate (FIX)
     private void validateInputs() {
-
         String nameText = name.getText().toString().trim();
-        if (nameText.isEmpty()) {
-            name.setError("Enter your name");
-        } else {
-            name.setError(null);
-        }
+        if (nameText.isEmpty()) name.setError("Enter your name");
+        else name.setError(null);
 
         String peopleText = people.getText().toString().trim();
-
         if (peopleText.isEmpty()) {
             people.setError("Enter number of people");
         } else {
             try {
                 int num = Integer.parseInt(peopleText);
-                if (num <= 0) {
-                    people.setError("Invalid number");
-                } else {
-                    people.setError(null);
-                }
+                if (num <= 0) people.setError("Invalid number");
+                else people.setError(null);
             } catch (Exception e) {
                 people.setError("Invalid input");
             }
@@ -146,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
                 && genreGroup.getCheckedRadioButtonId() != -1
                 && (popcorn.isChecked() || drink.isChecked() || nachos.isChecked())
                 && spinner.getSelectedItemPosition() != 0
-                && !selectedDate.isEmpty();
+                && !selectedDate.isEmpty()
+                && !selectedTime.isEmpty(); // added
 
         submit.setEnabled(valid);
     }
@@ -178,10 +192,21 @@ public class MainActivity extends AppCompatActivity {
                 genre,
                 snacks,
                 platform,
-                selectedDate
+                selectedDate,
+                selectedTime
         );
 
+        // Cost
+        int cost = Integer.parseInt(people.getText().toString()) * 150;
+        if (popcorn.isChecked()) cost += 100;
+        if (drink.isChecked()) cost += 80;
+        if (nachos.isChecked()) cost += 120;
 
+        // Suggestion
+        String suggestion = "";
+        if (genre.equals("Action")) suggestion = "Avengers 🔥";
+        if (genre.equals("Comedy")) suggestion = "Hangover 😂";
+        if (genre.equals("Horror")) suggestion = "Conjuring 👻";
 
         SharedPreferences.Editor editor = getSharedPreferences("MovieApp", MODE_PRIVATE).edit();
         editor.putString("name", name.getText().toString());
@@ -194,13 +219,13 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("snacks", snacks);
         intent.putExtra("platform", platform);
         intent.putExtra("date", selectedDate);
+        intent.putExtra("time", selectedTime);
+        intent.putExtra("cost", cost);
+        intent.putExtra("suggestion", suggestion);
 
-        Toast.makeText(this,
-                "🎬 Movie Plan Created Successfully!",
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "🎬 Movie Plan Created!", Toast.LENGTH_SHORT).show();
 
         startActivity(intent);
-
         showNotification(intent);
     }
 
