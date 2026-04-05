@@ -1,16 +1,21 @@
 package com.example.movie_planner;
 
+import android.Manifest;
 import android.app.*;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.*;
 import android.widget.*;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Calendar;
 
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     String selectedDate = "";
     String selectedTime = "";
+    private static final String CHANNEL_ID = "movie_plan_channel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-        // Notification permission
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+        // Notification permission request
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
         }
 
@@ -65,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        // Spinner text color fix
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                 if (view != null) ((TextView) view).setTextColor(Color.WHITE);
@@ -74,41 +79,31 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Date Picker
         btnDate.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
-
             DatePickerDialog dialog = new DatePickerDialog(this,
                     (view, year, month, dayOfMonth) -> {
                         selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
                         btnDate.setText(selectedDate);
                         validate();
                     },
-                    c.get(Calendar.YEAR),
-                    c.get(Calendar.MONTH),
-                    c.get(Calendar.DAY_OF_MONTH));
-
+                    c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             dialog.show();
         });
 
-        // ✅ Time Picker (ADDED)
         btnTime.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
-
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-
             TimePickerDialog dialog = new TimePickerDialog(this,
                     (view, h, m) -> {
                         selectedTime = h + ":" + m;
                         btnTime.setText(selectedTime);
                         validate();
                     }, hour, minute, true);
-
             dialog.show();
         });
 
-        // TextWatcher
         TextWatcher watcher = new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateInputs();
@@ -126,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         drink.setOnCheckedChangeListener(checkListener);
         nachos.setOnCheckedChangeListener(checkListener);
 
-        // ✅ History Button (ADDED)
         btnHistory.setOnClickListener(v -> {
             startActivity(new Intent(this, HistoryActivity.class));
         });
@@ -160,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 && (popcorn.isChecked() || drink.isChecked() || nachos.isChecked())
                 && spinner.getSelectedItemPosition() != 0
                 && !selectedDate.isEmpty()
-                && !selectedTime.isEmpty(); // added
+                && !selectedTime.isEmpty();
 
         submit.setEnabled(valid);
     }
@@ -175,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void proceed() {
-
         String genre = ((RadioButton) findViewById(
                 genreGroup.getCheckedRadioButtonId())).getText().toString();
 
@@ -196,21 +189,18 @@ public class MainActivity extends AppCompatActivity {
                 selectedTime
         );
 
-        // Cost
         int cost = Integer.parseInt(people.getText().toString()) * 150;
         if (popcorn.isChecked()) cost += 100;
         if (drink.isChecked()) cost += 80;
         if (nachos.isChecked()) cost += 120;
 
-        // Suggestion
         String suggestion = "";
         if (genre.equals("Action")) suggestion = "Avengers 🔥";
         if (genre.equals("Comedy")) suggestion = "Hangover 😂";
         if (genre.equals("Horror")) suggestion = "Conjuring 👻";
 
-        SharedPreferences.Editor editor = getSharedPreferences("MovieApp", MODE_PRIVATE).edit();
-        editor.putString("name", name.getText().toString());
-        editor.apply();
+        getSharedPreferences("MovieApp", MODE_PRIVATE).edit()
+                .putString("name", name.getText().toString()).apply();
 
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("name", name.getText().toString());
@@ -226,31 +216,54 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "🎬 Movie Plan Created!", Toast.LENGTH_SHORT).show();
 
         startActivity(intent);
-        showNotification(intent);
+        sendNotification(intent);
     }
 
-    private void showNotification(Intent intent) {
+    private void sendNotification(Intent intent) {
+        // Create Notification Channel for Android O+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Movie Planner Alerts";
+            String description = "Alerts for your movie plans";
+            int importance = NotificationManager.IMPORTANCE_HIGH; // HIGH for heads-up pop-up
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            channel.enableLights(true);
+            channel.setLightColor(Color.YELLOW);
+            channel.enableVibration(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        String channelId = "movie_channel";
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    channelId, "Movie Channel", NotificationManager.IMPORTANCE_HIGH);
-            manager.createNotificationChannel(channel);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        // Prepare Intent for Notification Click
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(this, channelId)
-                .setContentTitle("🎬 Movie Night Ready!")
-                .setContentText("Tap to view your plan")
+        // Build Notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_media_play)
+                .setContentTitle("🎬 Movie Night Ready!")
+                .setContentText("Tap to view your movie plan details")
+                .setPriority(NotificationCompat.PRIORITY_HIGH) // For pre-Oreo
+                .setDefaults(NotificationCompat.DEFAULT_ALL)   // Sound, Vibrate, Lights
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .build();
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-        manager.notify(1, notification);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // Final Permission Check for Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+
+        // Notify with a unique ID
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
 }
