@@ -63,9 +63,20 @@ public class SignupActivity extends AppCompatActivity {
 
             int genderId = genderGroup.getCheckedRadioButtonId();
 
-            // ✅ Validation
+
             if(n.isEmpty() || e.isEmpty() || u.isEmpty() || p.isEmpty() || cp.isEmpty()){
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            if(!n.matches("[a-zA-Z ]+")){
+                Toast.makeText(this, "Name cannot contain numbers", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(u.contains(" ")){
+                Toast.makeText(this, "Username cannot contain spaces", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -97,7 +108,7 @@ public class SignupActivity extends AppCompatActivity {
 
             RadioButton selectedGender = findViewById(genderId);
 
-            // ✅ Insert user
+
             boolean inserted = db.insertUser(
                     n,
                     e,

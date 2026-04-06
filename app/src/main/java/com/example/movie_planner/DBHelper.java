@@ -15,7 +15,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         // 🎬 ================== MOVIE PLANS TABLE ==================
-        // Used in: MainActivity (store movie plans)
         db.execSQL("CREATE TABLE plans(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
@@ -27,7 +26,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 "time TEXT)");
 
         // 👤 ================== USERS TABLE ==================
-        // Used in: SignupActivity + LoginActivity
         db.execSQL("CREATE TABLE users(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
@@ -41,7 +39,6 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        // 🔄 Drop old tables (if schema changes)
         db.execSQL("DROP TABLE IF EXISTS plans");
         db.execSQL("DROP TABLE IF EXISTS users");
 
@@ -50,8 +47,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // 🎬 ================== MOVIE PLAN METHODS ==================
 
-    // ➤ Used in: MainActivity
-    // Inserts movie plan details
     public void insertPlan(String name, String people, String genre,
                            String snacks, String platform, String date, String time) {
 
@@ -69,16 +64,23 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("plans", null, cv);
     }
 
-    // ➤ Used in: HistoryActivity
-    // Fetch all movie plans
-    public Cursor getAllPlans() {
-        return getReadableDatabase().rawQuery("SELECT * FROM plans", null);
+
+
+    // ✅ ONLY NEW METHOD ADDED
+    public Cursor getPlansByUser(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.rawQuery(
+                "SELECT plans.*, users.name AS real_name " +
+                        "FROM plans INNER JOIN users " +
+                        "ON plans.name = users.username " +
+                        "WHERE users.username=?",
+                new String[]{username}
+        );
     }
 
     // 👤 ================== USER AUTHENTICATION METHODS ==================
 
-    // ➤ Used in: SignupActivity
-    // Insert new user details into database
     public boolean insertUser(String name, String email, String username,
                               String gender, String dob, String password) {
 
@@ -96,8 +98,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    // ➤ Used in: LoginActivity
-    // Check if username & password match (login validation)
     public boolean checkUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -111,8 +111,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return exists;
     }
 
-    // ➤ Used in: SignupActivity
-    // Check if username already exists (to ensure uniqueness)
     public boolean isUsernameExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
 

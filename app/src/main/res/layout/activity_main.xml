@@ -171,7 +171,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="20dp"/>
 
-        <!-- NEW: Time Picker -->
+        <!-- Time Picker -->
         <Button
             android:id="@+id/btnTime"
             android:layout_width="0dp"
@@ -199,7 +199,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="30dp"/>
 
-        <!-- NEW: History Button -->
+        <!-- History Button -->
         <Button
             android:id="@+id/btnHistory"
             android:layout_width="0dp"
@@ -208,6 +208,20 @@
             android:textColor="#FFFFFF"
             android:backgroundTint="#334155"
             app:layout_constraintTop_toBottomOf="@id/btnSubmit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Sign Out Button -->
+        <Button
+            android:id="@+id/btnSignOut"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Sign Out "
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#EF4444"
+            app:layout_constraintTop_toBottomOf="@id/btnHistory"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="20dp"

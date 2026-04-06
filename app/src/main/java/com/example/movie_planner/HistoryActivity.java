@@ -1,5 +1,6 @@
 package com.example.movie_planner;
 
+import android.content.SharedPreferences; // ✅ added
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -18,7 +19,12 @@ public class HistoryActivity extends AppCompatActivity {
         tvHistory = findViewById(R.id.tvHistory);
         dbHelper = new DBHelper(this);
 
-        Cursor cursor = dbHelper.getAllPlans();
+        // ✅ changed: get logged-in username
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String username = prefs.getString("username", "");
+
+        // ✅ changed: fetch only that user's plans
+        Cursor cursor = dbHelper.getPlansByUser(username);
 
         StringBuilder data = new StringBuilder();
 
@@ -31,12 +37,12 @@ public class HistoryActivity extends AppCompatActivity {
             data.append("🎬 Plan\n");
             data.append("━━━━━━━━━━\n");
 
-            data.append("👤 Name: ").append(cursor.getString(1)).append("\n");
+            int nameIndex = cursor.getColumnIndex("real_name");
+            data.append("👤 Name: ").append(cursor.getString(nameIndex)).append("\n");
             data.append("👥 People: ").append(cursor.getString(2)).append("\n");
             data.append("🎭 Genre: ").append(cursor.getString(3)).append("\n");
             data.append("🍿 Snacks: ").append(cursor.getString(4)).append("\n");
 
-            // Safe access to new fields
             if (cursor.getColumnCount() > 5) {
                 data.append("📺 Platform: ").append(cursor.getString(5)).append("\n");
             }

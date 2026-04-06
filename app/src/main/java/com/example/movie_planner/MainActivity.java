@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.*;
 import android.content.*;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     EditText name, people;
     RadioGroup genreGroup;
     CheckBox popcorn, drink, nachos;
-    Button submit, btnDate, btnTime, btnHistory;
+    Button submit, btnDate, btnTime, btnHistory, btnSignOut;
     Spinner spinner;
     DBHelper dbHelper;
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         btnDate = findViewById(R.id.btnDate);
         btnTime = findViewById(R.id.btnTime);
         btnHistory = findViewById(R.id.btnHistory);
+        btnSignOut = findViewById(R.id.btnSignOut);
 
         dbHelper = new DBHelper(this);
 
@@ -61,8 +63,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // SharedPref
-        SharedPreferences prefs = getSharedPreferences("MovieApp", MODE_PRIVATE);
-        name.setText(prefs.getString("name", ""));
+        SharedPreferences userSession = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String username = userSession.getString("username", "");
+
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
+                "SELECT name FROM users WHERE username=?",
+                new String[]{username}
+        );
+
+        if(cursor.moveToFirst()){
+            name.setText(cursor.getString(0));
+        }
+        cursor.close();
+
+
 
         // Spinner
         String[] platforms = {"Choose", "Netflix", "Theatre", "Amazon Prime"};
@@ -124,6 +138,17 @@ public class MainActivity extends AppCompatActivity {
         btnHistory.setOnClickListener(v -> {
             startActivity(new Intent(this, HistoryActivity.class));
         });
+        btnSignOut.setOnClickListener(v -> {
+
+            SharedPreferences session = getSharedPreferences("UserSession", MODE_PRIVATE);
+            session.edit().clear().apply();
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+            Toast.makeText(this, "Signed Out", Toast.LENGTH_SHORT).show();
+        });
 
         submit.setOnClickListener(v -> showDialog());
     }
@@ -179,8 +204,11 @@ public class MainActivity extends AppCompatActivity {
 
         String platform = spinner.getSelectedItem().toString();
 
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String username = prefs.getString("username", "");
+
         dbHelper.insertPlan(
-                name.getText().toString(),
+                username,
                 people.getText().toString(),
                 genre,
                 snacks,
