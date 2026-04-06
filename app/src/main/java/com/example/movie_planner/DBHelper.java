@@ -6,7 +6,7 @@ import android.database.Cursor;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    // 🔧 Constructor (Database name + version)
+    //  Constructor (Database name + version)
     public DBHelper(Context context) {
         super(context, "MovieDB", null, 5); // version updated for users table
     }
@@ -14,7 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // 🎬 ================== MOVIE PLANS TABLE ==================
+        //  ================== MOVIE PLANS TABLE ==================
         db.execSQL("CREATE TABLE plans(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "date TEXT, " +
                 "time TEXT)");
 
-        // 👤 ================== USERS TABLE ==================
+        //  ================== USERS TABLE ==================
         db.execSQL("CREATE TABLE users(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
@@ -45,7 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // 🎬 ================== MOVIE PLAN METHODS ==================
+    //  ================== MOVIE PLAN METHODS ==================
 
     public void insertPlan(String name, String people, String genre,
                            String snacks, String platform, String date, String time) {
@@ -66,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    // ✅ ONLY NEW METHOD ADDED
+    //  ONLY NEW METHOD ADDED
     public Cursor getPlansByUser(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -79,7 +79,7 @@ public class DBHelper extends SQLiteOpenHelper {
         );
     }
 
-    // 👤 ================== USER AUTHENTICATION METHODS ==================
+    //  ================== USER AUTHENTICATION METHODS ==================
 
     public boolean insertUser(String name, String email, String username,
                               String gender, String dob, String password) {

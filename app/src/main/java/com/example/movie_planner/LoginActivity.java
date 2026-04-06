@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
 
         db = new DBHelper(this);
 
-        // 🔥 SESSION CHECK (skip login if already logged in)
+
         SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
         if(prefs.getBoolean("isLoggedIn", false)){
             startActivity(new Intent(this, MainActivity.class));
@@ -43,18 +43,18 @@ public class LoginActivity extends AppCompatActivity {
 
             if(db.checkUser(user, pass)){
 
-                // ✅ SAVE SESSION
+
                 prefs.edit().putBoolean("isLoggedIn", true)
                         .putString("username", user)
                         .apply();
 
-                Toast.makeText(this, "Login Successful ✅", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Login Successful ", Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
 
             } else {
-                Toast.makeText(this, "Invalid Username or Password ❌", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid Username or Password ", Toast.LENGTH_SHORT).show();
             }
         });
 

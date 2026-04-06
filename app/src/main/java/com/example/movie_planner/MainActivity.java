@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
-        // Notification permission request
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // SharedPref
+
         SharedPreferences userSession = getSharedPreferences("UserSession", MODE_PRIVATE);
         String username = userSession.getString("username", "");
 
@@ -223,9 +223,9 @@ public class MainActivity extends AppCompatActivity {
         if (nachos.isChecked()) cost += 120;
 
         String suggestion = "";
-        if (genre.equals("Action")) suggestion = "Avengers 🔥";
-        if (genre.equals("Comedy")) suggestion = "Hangover 😂";
-        if (genre.equals("Horror")) suggestion = "Conjuring 👻";
+        if (genre.equals("Action")) suggestion = "Avengers ";
+        if (genre.equals("Comedy")) suggestion = "Hangover ";
+        if (genre.equals("Horror")) suggestion = "Conjuring ";
 
         getSharedPreferences("MovieApp", MODE_PRIVATE).edit()
                 .putString("name", name.getText().toString()).apply();
@@ -248,17 +248,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendNotification(Intent intent) {
-        // Create Notification Channel for Android O+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Movie Planner Alerts";
             String description = "Alerts for your movie plans";
-            int importance = NotificationManager.IMPORTANCE_HIGH; // HIGH for heads-up pop-up
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            channel.enableLights(true);
-            channel.setLightColor(Color.YELLOW);
-            channel.enableVibration(true);
-            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Movie Planner Alert"
+                    , NotificationManager.IMPORTANCE_DEFAULT);
+
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             if (notificationManager != null) {
@@ -266,32 +265,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Prepare Intent for Notification Click
+
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Build Notification
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_media_play)
                 .setContentTitle("🎬 Movie Night Ready!")
                 .setContentText("Tap to view your movie plan details")
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // For pre-Oreo
-                .setDefaults(NotificationCompat.DEFAULT_ALL)   // Sound, Vibrate, Lights
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        // Final Permission Check for Android 13+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
         }
 
-        // Notify with a unique ID
+
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
 }

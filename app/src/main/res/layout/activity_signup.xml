@@ -30,7 +30,7 @@
                 <!-- Title -->
                 <TextView
                     android:id="@+id/title"
-                    android:text="Create Account ✨"
+                    android:text="Create Account "
                     android:textSize="26sp"
                     android:textStyle="bold"
                     android:textColor="#FACC15"
@@ -112,12 +112,16 @@
                     <RadioButton
                         android:text="Male"
                         android:textColor="#FFFFFF"
-                        android:buttonTint="#7C3AED"/>
+                        android:buttonTint="#7C3AED"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"/>
 
                     <RadioButton
                         android:text="Female"
                         android:textColor="#FFFFFF"
-                        android:buttonTint="#7C3AED"/>
+                        android:buttonTint="#7C3AED"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"/>
                 </RadioGroup>
 
                 <!-- DOB Button -->

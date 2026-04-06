@@ -9,7 +9,7 @@
     <!-- Title -->
     <TextView
         android:id="@+id/tvTitle"
-        android:text="Welcome to Movie Planner 🎬"
+        android:text="Welcome to Movie Planner "
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#FACC15"

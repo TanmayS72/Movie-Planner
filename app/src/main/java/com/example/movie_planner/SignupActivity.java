@@ -23,7 +23,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        // 🔗 Link UI
+
         name = findViewById(R.id.etName);
         email = findViewById(R.id.etEmail);
         username = findViewById(R.id.etUsername);
@@ -35,7 +35,7 @@ public class SignupActivity extends AppCompatActivity {
 
         db = new DBHelper(this);
 
-        // 📅 Date Picker
+
         btnDOB.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
 
@@ -52,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
             dialog.show();
         });
 
-        // 🔘 Signup Button Click
+
         signup.setOnClickListener(v -> {
 
             String n = name.getText().toString().trim();
@@ -100,9 +100,9 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // 🔥 Check if username exists
+
             if(db.isUsernameExists(u)){
-                Toast.makeText(this, "Username already taken ⚠️", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Username already taken ", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -119,14 +119,14 @@ public class SignupActivity extends AppCompatActivity {
             );
 
             if(inserted){
-                Toast.makeText(this, "Signup Successful 🎉", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Signup Successful ", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(this, "Signup Failed ❌", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Signup Failed ", Toast.LENGTH_SHORT).show();
             }
         });
     }

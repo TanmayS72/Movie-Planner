@@ -19,7 +19,7 @@ public class ResultActivity extends AppCompatActivity {
         TextView tv = findViewById(R.id.tvResult);
         Button btnMap = findViewById(R.id.btnMap);
 
-        // Get data from Intent
+
         String name = getIntent().getStringExtra("name");
         String people = getIntent().getStringExtra("people");
         String genre = getIntent().getStringExtra("genre");
@@ -27,12 +27,12 @@ public class ResultActivity extends AppCompatActivity {
         String platform = getIntent().getStringExtra("platform");
         String date = getIntent().getStringExtra("date");
 
-        // NEW FEATURES
+
         int cost = getIntent().getIntExtra("cost", 0);
         String suggestion = getIntent().getStringExtra("suggestion");
         String time = getIntent().getStringExtra("time");
 
-        // Null safety
+
         if (name == null) name = "Guest";
         if (people == null) people = "0";
         if (genre == null) genre = "Not selected";
@@ -45,9 +45,9 @@ public class ResultActivity extends AppCompatActivity {
         // Greeting
         String greeting;
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour < 12) greeting = "Good Morning ☀️";
-        else if (hour < 17) greeting = "Good Afternoon 🌤️";
-        else greeting = "Good Evening 🌙";
+        if (hour < 12) greeting = "Good Morning ";
+        else if (hour < 17) greeting = "Good Afternoon ";
+        else greeting = "Good Evening ";
 
         // Final Output
         String resultText =
@@ -63,14 +63,14 @@ public class ResultActivity extends AppCompatActivity {
                         "⏰ Time: " + time + "\n" +
                         "🍿 Snacks: " + snacks + "\n\n" +
 
-                        "🎥 Suggested Movie: " + suggestion + "\n" +
-                        "💰 Total Cost: ₹" + cost + "\n\n" +
+                        " Suggested Movie: " + suggestion + "\n" +
+                        " Total Cost: ₹" + cost + "\n\n" +
 
-                        "✨ Sit back, relax & enjoy your movie night! 🍿🎉";
+                        " Sit back, relax & enjoy your movie night! 🍿🎉🎊";
 
         tv.setText(resultText);
 
-        // Maps Intent
+
         btnMap.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("geo:0,0?q=movie theatre near me"));

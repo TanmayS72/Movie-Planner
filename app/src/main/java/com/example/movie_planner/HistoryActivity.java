@@ -19,17 +19,17 @@ public class HistoryActivity extends AppCompatActivity {
         tvHistory = findViewById(R.id.tvHistory);
         dbHelper = new DBHelper(this);
 
-        // ✅ changed: get logged-in username
+        //  changed: get logged-in username
         SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
         String username = prefs.getString("username", "");
 
-        // ✅ changed: fetch only that user's plans
+        //  changed: fetch only that user's plans
         Cursor cursor = dbHelper.getPlansByUser(username);
 
         StringBuilder data = new StringBuilder();
 
         if (cursor.getCount() == 0) {
-            tvHistory.setText("No History Found 😔");
+            tvHistory.setText("No History Found ");
             return;
         }
 
