@@ -65,8 +65,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-
-    //  ONLY NEW METHOD ADDED
     public Cursor getPlansByUser(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
 

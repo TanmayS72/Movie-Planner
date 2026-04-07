@@ -250,9 +250,7 @@ public class MainActivity extends AppCompatActivity {
     private void sendNotification(Intent intent) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Movie Planner Alerts";
-            String description = "Alerts for your movie plans";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
+
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "Movie Planner Alert"

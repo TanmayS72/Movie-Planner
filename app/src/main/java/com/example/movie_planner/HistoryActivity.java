@@ -43,15 +43,15 @@ public class HistoryActivity extends AppCompatActivity {
             data.append("🎭 Genre: ").append(cursor.getString(3)).append("\n");
             data.append("🍿 Snacks: ").append(cursor.getString(4)).append("\n");
 
-            if (cursor.getColumnCount() > 5) {
+
                 data.append("📺 Platform: ").append(cursor.getString(5)).append("\n");
-            }
-            if (cursor.getColumnCount() > 6) {
+
+
                 data.append("📅 Date: ").append(cursor.getString(6)).append("\n");
-            }
-            if (cursor.getColumnCount() > 7) {
+
+
                 data.append("⏰ Time: ").append(cursor.getString(7)).append("\n");
-            }
+            
 
             data.append("\n\n");
         }
